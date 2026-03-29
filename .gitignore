@@ -212,3 +212,12 @@ data/processed/
 venv/
 __pycache__/
 *.pyc
+
+
+data/raw/
+data/processed/
+data/chromadb/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
