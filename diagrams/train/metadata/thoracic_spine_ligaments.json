@@ -1,0 +1,7 @@
+{
+  "filename": "thoracic_spine_ligaments.jpg",
+  "primary_structure": "thoracic spine ligaments",
+  "body_region": "back",
+  "visible_labels": ["anterior longitudinal ligament", "posterior longitudinal ligament", "ligamentum flavum", "costotransverse ligament", "radiate ligament", "intervertebral disc"],
+  "textbook_chapter": "Back - Articular system"
+}

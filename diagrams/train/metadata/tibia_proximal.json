@@ -1,0 +1,7 @@
+{
+  "filename": "tibia_proximal.jpg",
+  "primary_structure": "proximal tibia",
+  "body_region": "lower limb",
+  "visible_labels": ["medial condyle", "lateral condyle", "tibial plateau", "tibial tuberosity", "intercondylar eminence", "fibular head", "Gerdy's tubercle"],
+  "textbook_chapter": "Lower Limb - Skeletal system"
+}

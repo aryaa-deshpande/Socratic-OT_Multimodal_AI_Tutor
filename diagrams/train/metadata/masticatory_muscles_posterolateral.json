@@ -1,0 +1,7 @@
+{
+  "filename": "masticatory_muscles_posterolateral.jpg",
+  "primary_structure": "masticatory muscles",
+  "body_region": "head",
+  "visible_labels": ["masseter", "temporalis", "medial pterygoid", "lateral pterygoid", "mandible", "zygomatic arch"],
+  "textbook_chapter": "Head - Muscular system"
+}

@@ -1,0 +1,7 @@
+{
+  "filename": "peritoneal_folds_uterus.png",
+  "primary_structure": "peritoneal folds around uterus",
+  "body_region": "pelvis",
+  "visible_labels": ["broad ligament", "vesicouterine pouch", "rectouterine pouch", "round ligament", "uterosacral ligament", "uterus", "ovary"],
+  "textbook_chapter": "Pelvis & Perineum - Genital system"
+}

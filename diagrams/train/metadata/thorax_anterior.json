@@ -1,0 +1,7 @@
+{
+  "filename": "thorax_anterior.png",
+  "primary_structure": "thorax anterior view",
+  "body_region": "thorax",
+  "visible_labels": ["sternum", "ribs", "costal cartilage", "clavicle", "manubrium", "xiphoid process", "intercostal spaces"],
+  "textbook_chapter": "Thorax - Skeletal system"
+}

@@ -1,0 +1,7 @@
+{
+  "filename": "esophagus.jpg",
+  "primary_structure": "esophagus",
+  "body_region": "thorax",
+  "visible_labels": ["cervical esophagus", "thoracic esophagus", "abdominal esophagus", "lower esophageal sphincter", "pharynx"],
+  "textbook_chapter": "Thorax - Digestive system"
+}
