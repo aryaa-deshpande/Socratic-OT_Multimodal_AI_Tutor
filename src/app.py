@@ -82,7 +82,7 @@ st.markdown("""
 st.markdown("""
 <div class="header">
     <h1>🧬 Socratic-OT Anatomy Tutor</h1>
-    <p>I won't give you the answer — I'll guide you to it.</p>
+    <p>I won't give you the answer but I'll guide you to it!</p>
 </div>
 """, unsafe_allow_html=True)
 
@@ -91,6 +91,9 @@ if "messages" not in st.session_state:
 if "turn_number" not in st.session_state:
     st.session_state.turn_number = 0
 
+if "hidden_answer" not in st.session_state:
+    st.session_state.hidden_answer = None
+
 # render chat history
 for msg in st.session_state.messages:
     if msg["role"] == "user":
@@ -98,11 +101,36 @@ for msg in st.session_state.messages:
     else:
         st.markdown(f'<div class="bot-msg"><div class="bot-avatar">🧬</div><span>{msg["content"]}</span></div>', unsafe_allow_html=True)
 
-# input
+def is_new_topic(new_question, history):
+    if not history:
+        return True
+    previous_questions = [m["content"] for m in history if m["role"] == "user"]
+    if not previous_questions:
+        return True
+    last_question = previous_questions[-1]
+    # if the new question shares very few words with the last one, it's a new topic
+    new_words = set(new_question.lower().split())
+    last_words = set(last_question.lower().split())
+    overlap = new_words & last_words
+    # remove common filler words
+    filler = {"what", "is", "the", "a", "an", "how", "does", "do", "can", "you", "me", "about", "of", "in", "and"}
+    overlap = overlap - filler
+    return len(overlap) == 0
+
 if user_input := st.chat_input("Ask an anatomy question..."):
+    if is_new_topic(user_input, st.session_state.messages):
+        st.session_state.turn_number = 0
+        st.session_state.hidden_answer = None
+    
     st.session_state.messages.append({"role": "user", "content": user_input})
     st.session_state.turn_number += 1
     with st.spinner("Thinking..."):
-        hint, _ = masking_pipeline(user_input, st.session_state.turn_number)
+        hint, hidden_answer = masking_pipeline(
+            user_input,
+            st.session_state.turn_number,
+            st.session_state.messages,
+            st.session_state.hidden_answer
+        )
+        st.session_state.hidden_answer = hidden_answer
     st.session_state.messages.append({"role": "assistant", "content": hint})
     st.rerun()
