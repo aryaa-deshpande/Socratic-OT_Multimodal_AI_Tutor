@@ -1,0 +1,82 @@
+[
+    {
+        "question": "What is the brachial plexus?",
+        "ground_truth": "The brachial plexus is a network of nerves formed by spinal nerves C4 through T1 that reorganize to supply the nerves of the arm."
+    },
+    {
+        "question": "What is the function of the cerebellum?",
+        "ground_truth": "The cerebellum coordinates smooth voluntary movements and maintains balance and posture using proprioceptive feedback."
+    },
+    {
+        "question": "What are the four main nerve plexuses in the human body?",
+        "ground_truth": "The four main nerve plexuses are the cervical plexus, brachial plexus, lumbar plexus, and sacral plexus."
+    },
+    {
+        "question": "What spinal levels form the cervical plexus?",
+        "ground_truth": "The cervical plexus is composed of axons from spinal nerves C1 through C5 and supplies nerves to the posterior head, neck, and diaphragm."
+    },
+    {
+        "question": "What is the function of the median nerve?",
+        "ground_truth": "The median nerve provides motor control and sensation to the thumb, index, and middle fingers and is responsible for fine motor tasks like gripping and pinching."
+    },
+    {
+        "question": "What is the role of the radial nerve?",
+        "ground_truth": "The radial nerve is a large nerve from the brachial plexus that runs through the arm and is responsible for motor control of the wrist and finger extensors."
+    },
+    {
+        "question": "What is the function of the ulnar nerve?",
+        "ground_truth": "The ulnar nerve supplies motor and sensory innervation to the ring and little fingers and controls many of the small muscles in the hand."
+    },
+    {
+        "question": "What is the lumbar plexus?",
+        "ground_truth": "The lumbar plexus arises from the lumbar spinal nerves and supplies nerves to the thigh and leg, including the femoral nerve."
+    },
+    {
+        "question": "What is the sacral plexus?",
+        "ground_truth": "The sacral plexus arises from sacral spinal nerves and supplies the lower limb, including the sciatic nerve which is the largest nerve in the body."
+    },
+    {
+        "question": "What is the function of the diaphragm and which nerve controls it?",
+        "ground_truth": "The diaphragm is the primary muscle of respiration and is controlled by the phrenic nerve which originates from the cervical plexus at spinal levels C3 through C5."
+    },
+    {
+        "question": "What is a nerve plexus?",
+        "ground_truth": "A nerve plexus is a network of intersecting nerves or nerve fibers that reorganize before branching out to supply specific regions of the body."
+    },
+    {
+        "question": "What is the function of the sympathetic nervous system?",
+        "ground_truth": "The sympathetic nervous system prepares the body for fight or flight responses by increasing heart rate, dilating pupils, and redirecting blood flow to muscles."
+    },
+    {
+        "question": "What is the function of the parasympathetic nervous system?",
+        "ground_truth": "The parasympathetic nervous system promotes rest and digest responses, slowing heart rate, stimulating digestion, and conserving energy."
+    },
+    {
+        "question": "What is the sciatic nerve?",
+        "ground_truth": "The sciatic nerve is the largest nerve in the body, arising from the sacral plexus and running down the leg to supply the muscles and skin of the lower limb."
+    },
+    {
+        "question": "What is the role of the femoral nerve?",
+        "ground_truth": "The femoral nerve arises from the lumbar plexus and supplies motor innervation to the quadriceps muscles and sensory innervation to the anterior thigh."
+    },
+    {
+        "question": "What is the difference between sensory and motor neurons?",
+        "ground_truth": "Sensory neurons carry signals from the body to the brain and spinal cord, while motor neurons carry signals from the brain and spinal cord to muscles and glands."
+    },
+    {
+        "question": "What is a reflex arc?",
+        "ground_truth": "A reflex arc is a neural pathway that controls a reflex action, involving a sensory receptor, afferent neuron, interneuron, efferent neuron, and effector muscle."
+    },
+    {
+        "question": "What is the function of the corpus callosum?",
+        "ground_truth": "The corpus callosum is a bundle of nerve fibers that connects the left and right cerebral hemispheres, allowing communication between them."
+    },
+    {
+        "question": "What is the role of the hippocampus?",
+        "ground_truth": "The hippocampus is a region of the brain involved in forming and consolidating new memories and plays a role in spatial navigation."
+    },
+    {
+        "question": "What is the function of the thalamus?",
+        "ground_truth": "The thalamus acts as a relay station for sensory and motor signals to the cerebral cortex and regulates consciousness, sleep, and alertness."
+    }
+]
