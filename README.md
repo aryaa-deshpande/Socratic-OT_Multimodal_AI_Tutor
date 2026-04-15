@@ -151,7 +151,7 @@ This takes several minutes as it makes LLM calls for each question. Results are 
 
 ---
 
-## Notes for teammates
+## Notes 
 
 - Python 3.10 or above is required, RAGAS has compatibility issues with Python 3.9
 - The `data/` folder is gitignored, you need to run `ingest.py` and `embed.py` yourself after cloning
