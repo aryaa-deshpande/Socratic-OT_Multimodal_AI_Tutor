@@ -50,3 +50,5 @@ if __name__ == "__main__":
     chunks = load_chunks()
     collection = embed_and_store(chunks)
     test_retrieval(collection)
+
+    
