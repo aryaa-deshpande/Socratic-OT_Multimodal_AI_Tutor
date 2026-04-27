@@ -48,12 +48,17 @@ Answer YES if the student's response contains the key specific facts from the hi
 Answer NO only if the response is vague, general, or missing the core specific facts.
 A response that gets the main idea right with specific details should be YES."""
 
-    result = groq_client.chat.completions.create(
-        model="llama-3.1-8b-instant",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    return result.choices[0].message.content.strip().upper() == "YES"
-
+    try:
+        result = groq_client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        answer = result.choices[0].message.content.strip().upper()
+        return "YES" in answer
+    except Exception as e:
+        print(f"student_is_close error: {e}")
+        return False
+    
 def generate_hint(question, chunks, hidden_answer, turn_number, history=None):
     if history is None:
         history = []
@@ -104,12 +109,16 @@ def guardrail_check(response_text, hidden_answer):
 
     Reply with only YES or NO."""
 
-    result = groq_client.chat.completions.create(
-        model="llama-3.1-8b-instant",
-        messages=[{"role": "user", "content": prompt}]
-    )
-    verdict = result.choices[0].message.content.strip().upper()
-    return verdict == "NO"
+    try:
+        result = groq_client.chat.completions.create(
+            model="llama-3.1-8b-instant",
+            messages=[{"role": "user", "content": prompt}]
+        )
+        answer = result.choices[0].message.content.strip().upper()
+        return "NO" in answer
+    except Exception as e:
+        print(f"guardrail_check error: {e}")
+        return True
 
 def masking_pipeline(question, turn_number, history=None, stored_answer = []):
     if history is None:
