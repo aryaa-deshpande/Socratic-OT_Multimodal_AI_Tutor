@@ -100,3 +100,101 @@ class ManagerAgent:
         )
         
         return hint
+        
+    def handle_assessment(self, message):
+        
+        if not self.assessment_started:
+            self.assessment_started = True
+            
+            # get relevant chunks for context
+            chunks = retrieve_chunks(self.current_topic)
+            context = "\n\n".join(chunks[:3])
+            
+            prompt = f"""You are an Occupational Therapy anatomy tutor.
+
+    The student has just correctly identified the following concept:
+    Topic: {self.current_topic}
+    Answer: {self.hidden_answer}
+
+    Textbook context:
+    {context}
+
+    Generate ONE clinical scenario question for an OT student at an introductory level.
+    The scenario should:
+    - Describe a real patient situation an OT might encounter
+    - Ask the student to apply their understanding of {self.current_topic} to explain what is happening or what they would expect
+    - Be specific enough that there is a clear correct answer grounded in the textbook content
+    - NOT restate or hint at the answer
+
+    Example format: "A patient presents with X. Based on what you know, what would you expect and why?"
+    """
+
+            try:
+                response = groq_client.chat.completions.create(
+                    model="llama-3.1-8b-instant",
+                    messages=[{"role": "user", "content": prompt}]
+                )
+                return response.choices[0].message.content.strip()
+            except Exception as e:
+                print(f"handle_assessment scenario error: {e}")
+                return f"Now that you have a better understanding of {self.current_topic}, how would you apply this in a clinical setting? Describe a patient scenario and walk me through your reasoning."
+        
+        else:
+            mastery = self.run_llm_judge(message)
+            save_mastery(
+                student_id=self.student_id,
+                topic=self.current_topic,
+                score=mastery["score"],
+                tutor_note=mastery["tutor_note"],
+                student_summary=mastery["student_summary"]
+            )
+            
+            self.phase = "rapport"
+            self.assessment_started = False
+            self.hidden_answer = None
+            self.turn_count = 0
+            self.current_topic = None
+            
+            return f"""Here's how you did:
+
+    {mastery['feedback']}
+
+    **Summary:** {mastery['student_summary']}
+
+    Feel free to ask me about another topic whenever you're ready!"""
+        
+    def run_llm_judge(self, student_response):
+        chunks = retrieve_chunks(self.current_topic)
+        context = "\n\n".join(chunks[:3])
+        
+        prompt = f"""You are evaluating an OT student's clinical reasoning.
+
+    Topic: {self.current_topic}
+    Gold standard answer: {self.hidden_answer}
+    Textbook context: {context}
+    Student's response: {student_response}
+
+    Evaluate the student and return a JSON object with exactly these four keys:
+    - score: one of "strong", "partial", or "weak"
+    - tutor_note: one sentence for the tutor about what to revisit (student never sees this)
+    - student_summary: one sentence telling the student how they did overall
+    - feedback: 3-4 sentences of real feedback — what they got right, what they missed, and the correct clinical reasoning explained clearly
+
+    Return only valid JSON, no extra text."""
+
+        try:
+            response = groq_client.chat.completions.create(
+                model="llama-3.1-8b-instant",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+            import json
+            return json.loads(response.choices[0].message.content)
+        except Exception as e:
+            print(f"run_llm_judge error: {e}")
+            return {
+                "score": "partial",
+                "tutor_note": f"Could not evaluate student response on {self.current_topic}",
+                "student_summary": "Good effort on that topic. Keep practicing!",
+                "feedback": "I wasn't able to fully evaluate your response this time. Let's keep going and come back to this topic."
+            }
