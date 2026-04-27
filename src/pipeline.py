@@ -120,21 +120,11 @@ def guardrail_check(response_text, hidden_answer):
         print(f"guardrail_check error: {e}")
         return True
 
-def masking_pipeline(question, turn_number, history=None, stored_answer = []):
+def masking_pipeline(question, turn_number, history=None, stored_answer = None):
     if history is None:
         history = []
     chunks = retrieve_chunks(question)
     hidden_answer = stored_answer if stored_answer else extract_answer(question, chunks)
-
-    
-    # check if student is already close to the answer
-    if turn_number > 1 and history:
-        last_student_message = next(
-        (msg["content"] for msg in reversed(history) if msg["role"] == "user"),
-        ""
-    )
-        if student_is_close(last_student_message, hidden_answer):
-            return "You're very close! Can you now put it all together and tell me the full answer in your own words?", hidden_answer
     
     for attempt in range(3):
         hint = generate_hint(question, chunks, hidden_answer, turn_number, history)
