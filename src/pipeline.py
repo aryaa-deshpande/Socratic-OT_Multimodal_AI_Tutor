@@ -39,14 +39,20 @@ def extract_answer(question, chunks):
     return response.choices[0].message.content.strip()
 
 def student_is_close(student_response, hidden_answer):
-    prompt = f"""You are strictly evaluating a student's response in a Socratic tutoring session.
+    prompt = f"""You are deciding whether a student is close enough to the correct answer in a Socratic tutoring session to move forward.
 
 Hidden answer: {hidden_answer}
 Student's response: {student_response}
 
-Answer YES if the student's response contains the key specific facts from the hidden answer, even if not perfectly worded.
-Answer NO only if the response is vague, general, or missing the core specific facts.
-A response that gets the main idea right with specific details should be YES."""
+Important: Students will often be uncertain in their tone — phrases like "I think", "maybe", "isn't it" are normal and should NOT count against them. Focus only on the content, not the confidence.
+
+Answer YES if the student's response contains the core concept AND at least one specific anatomical detail — even if phrased as a guess.
+Answer NO if the response is purely general with no specific details, even if it's in the right ballpark.
+
+To decide, ask yourself: "Does this student clearly have the right idea, even if they haven't fully articulated it yet?"
+
+Reply with only YES or NO."""
+
 
     try:
         result = groq_client.chat.completions.create(
