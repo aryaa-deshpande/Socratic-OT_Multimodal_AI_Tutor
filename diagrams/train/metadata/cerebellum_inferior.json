@@ -1,0 +1,7 @@
+{
+  "filename": "cerebellum_inferior.png",
+  "primary_structure": "cerebellum",
+  "body_region": "head",
+  "visible_labels": ["vermis", "tonsil", "flocculus", "posterior lobe", "biventer lobule", "inferior cerebellar peduncle"],
+  "textbook_chapter": "Head - Nervous system"
+}

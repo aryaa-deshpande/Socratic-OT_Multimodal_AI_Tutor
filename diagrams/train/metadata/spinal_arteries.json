@@ -1,0 +1,7 @@
+{
+  "filename": "spinal_arteries.jpg",
+  "primary_structure": "spinal arteries",
+  "body_region": "back",
+  "visible_labels": ["anterior spinal artery", "posterior spinal artery", "radicular arteries", "artery of Adamkiewicz", "sulcal arteries"],
+  "textbook_chapter": "Back - Cardiovascular system"
+}

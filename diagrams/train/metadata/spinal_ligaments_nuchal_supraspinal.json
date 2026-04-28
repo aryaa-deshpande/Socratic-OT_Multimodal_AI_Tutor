@@ -1,0 +1,7 @@
+{
+  "filename": "spinal_ligaments_nuchal_supraspinal.jpg",
+  "primary_structure": "spinal ligaments",
+  "body_region": "back",
+  "visible_labels": ["nuchal ligament", "supraspinal ligament", "interspinal ligament", "ligamentum flavum", "spinous process", "vertebral body"],
+  "textbook_chapter": "Back - Articular system"
+}

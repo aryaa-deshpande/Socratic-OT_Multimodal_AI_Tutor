@@ -1,0 +1,7 @@
+{
+  "filename": "diaphragm_crura.png",
+  "primary_structure": "diaphragm",
+  "body_region": "thorax",
+  "visible_labels": ["left crus", "right crus", "central tendon", "aortic hiatus", "esophageal hiatus", "caval opening", "arcuate ligaments"],
+  "textbook_chapter": "Thorax - Muscular system"
+}
