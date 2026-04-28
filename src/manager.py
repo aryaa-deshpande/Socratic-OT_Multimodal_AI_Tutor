@@ -214,12 +214,16 @@ class ManagerAgent:
                 "feedback": "I wasn't able to fully evaluate your response this time. Let's keep going and come back to this topic."
             }
         
-    def get_acknowledgment(self, message):
-        prompt = f"""You are a friendly anatomy tutor. The student just asked: "{message}"
+    def get_acknowledgment(self, transition_type):
+        messages = {
+            "rapport_to_tutoring": "Generate ONE short warm sentence (max 10 words) acknowledging that the student asked a good question. Don't answer it.",
+            "tutoring_to_assessment": "Generate ONE short encouraging sentence (max 10 words) congratulating the student for figuring out the answer. Keep it natural.",
+            "assessment_to_rapport": "Generate ONE short warm closing sentence (max 10 words) wrapping up the topic and encouraging the student to keep going."
+        }
         
-    Write ONE very short sentence (max 10 words) acknowledging their question warmly before you start tutoring.
-    Examples: "Great question!", "Ooh, good one!", "Love that you're asking about this!"
-    Do not answer the question. Just acknowledge it."""
+        prompt = f"""You are a friendly anatomy tutor. {messages[transition_type]}
+    Examples of good responses: "Great question!", "Nice work getting there!", "Good session today!"
+    Return only the sentence, nothing else."""
 
         try:
             result = groq_client.chat.completions.create(
@@ -229,4 +233,9 @@ class ManagerAgent:
             return result.choices[0].message.content.strip()
         except Exception as e:
             print(f"get_acknowledgment error: {e}")
-            return "Great question! Let's explore this together."
+            fallbacks = {
+                "rapport_to_tutoring": "Great question! Let's explore this together.",
+                "tutoring_to_assessment": "Nice work! Now let's apply what you've learned.",
+                "assessment_to_rapport": "Good effort today! Keep it up."
+            }
+            return fallbacks[transition_type]
