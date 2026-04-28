@@ -87,6 +87,8 @@ class ManagerAgent:
         
     def handle_tutoring(self, message):
         self.turn_count += 1
+        print(f"DEBUG hidden_answer: {self.hidden_answer}")
+        print(f"DEBUG student message: {message}")
         
         # check if student is close to the answer
         if self.turn_count > 1 and self.hidden_answer:

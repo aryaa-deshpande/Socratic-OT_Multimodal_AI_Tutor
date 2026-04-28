@@ -39,17 +39,33 @@ def extract_answer(question, chunks):
     return response.choices[0].message.content.strip()
 
 def student_is_close(student_response, hidden_answer):
-    prompt = f"""You are deciding whether a student is close enough to the correct answer in a Socratic tutoring session to move forward.
+    prompt = f"""You are a fair and experienced anatomy tutor evaluating whether a student understands a concept well enough to move forward.
 
 Hidden answer: {hidden_answer}
 Student's response: {student_response}
 
-Important: Students will often be uncertain in their tone — phrases like "I think", "maybe", "isn't it" are normal and should NOT count against them. Focus only on the content, not the confidence.
+You are looking for THREE things — but be reasonable, not too strict:
+1. Does the student show they know WHAT the structure/system is — even if they use informal language?
+2. Does the student show they know its FUNCTION or role — even roughly?
+3. Is there at least ONE specific detail that shows genuine understanding — not just a guess?
 
-Answer YES if the student's response contains the core concept AND at least one specific anatomical detail — even if phrased as a guess.
-Answer NO if the response is purely general with no specific details, even if it's in the right ballpark.
+Important guidance:
+- Informal language is fine — "part of the nervous system" counts as identifying it
+- Uncertain tone like "I think" or "maybe" is fine — judge the content not the confidence  
+- The student does NOT need to use exact medical terminology
+- But pure everyday language with no anatomical connection at all is NOT enough
+- Ask yourself: "Would a real tutor say this student clearly gets it?" If yes, answer YES
 
-To decide, ask yourself: "Does this student clearly have the right idea, even if they haven't fully articulated it yet?"
+Examples of NO:
+- "I think it has something to do with stress" — no anatomical connection, too vague
+- "maybe something in the brain?" — no specific detail at all
+- "fight or flight means your heart beats faster and you get adrenaline" — everyday language only, no nervous system connection
+- "I don't know" — obviously no
+
+Examples of YES:
+- "it's the part of the nervous system that prepares you for fight or flight by speeding up heart rate" — informal but has anatomical connection and specific detail
+- "I think it controls stress responses, increases heart rate and dilates pupils?" — uncertain tone but three specific details
+- "maybe the sympathetic division that activates during danger and redirects blood to muscles?" — close enough
 
 Reply with only YES or NO."""
 
