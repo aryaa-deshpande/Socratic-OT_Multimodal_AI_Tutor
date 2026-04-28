@@ -43,7 +43,7 @@ class ManagerAgent:
             self.phase = "tutoring"
             self.current_topic = message
             self.turn_count = 0
-            acknowledgment = self.get_acknowledgment(message)
+            acknowledgment = self.get_acknowledgment('rapport_to_tutoring')
             first_hint = self.handle_tutoring(message)
             return f"{acknowledgment}\n\n{first_hint}"
         
@@ -92,7 +92,8 @@ class ManagerAgent:
         if self.turn_count > 1 and self.hidden_answer:
             if student_is_close(message, self.hidden_answer):
                 self.phase = "assessment"
-                return "You're very close! Can you now put it all together and tell me the full answer in your own words?"
+                acknowledgment = self.get_acknowledgment("tutoring_to_assessment")
+                return f"{acknowledgment}\n\nYou're very close! Can you now put it all together and tell me the full answer in your own words?"
         
         hint, self.hidden_answer = masking_pipeline(
             self.current_topic,
@@ -135,11 +136,13 @@ class ManagerAgent:
                     model="llama-3.1-8b-instant",
                     messages=[{"role": "user", "content": prompt}]
                 )
-                return response.choices[0].message.content.strip()
+                scenario = response.choices[0].message.content.strip()
+                acknowledgment = self.get_acknowledgment("tutoring_to_assessment")
+                return f"{acknowledgment}\n\nNow let's see if you can apply what you've learned. Here's a clinical scenario:\n\n{scenario}"
             except Exception as e:
                 print(f"handle_assessment scenario error: {e}")
                 return f"Now that you have a better understanding of {self.current_topic}, how would you apply this in a clinical setting? Describe a patient scenario and walk me through your reasoning."
-        
+            
         elif self.assessment_attempt == 1:
             self.assessment_attempt = 2
             mastery = self.run_llm_judge(message)
@@ -160,7 +163,8 @@ class ManagerAgent:
                 self.hidden_answer = None
                 self.turn_count = 0
                 self.current_topic = None
-                return f"Here's how you did:\n\n{mastery['feedback']}\n\n**Summary:** {mastery['student_summary']}\n\nFeel free to ask me about another topic whenever you're ready!"
+                acknowledgment = self.get_acknowledgment("assessment_to_rapport")
+                return f"{acknowledgment}\n\nHere's how you did:\n\n{mastery['feedback']}\n\n**Summary:** {mastery['student_summary']}\n\nFeel free to ask me about another topic whenever you're ready!"
         
         elif self.assessment_attempt == 2:
             mastery = self.run_llm_judge(message)
@@ -171,13 +175,15 @@ class ManagerAgent:
                 tutor_note=mastery["tutor_note"],
                 student_summary=mastery["student_summary"]
             )
+            completed_topic = self.current_topic
             self.phase = "rapport"
             self.assessment_attempt = 0
             self.hidden_answer = None
             self.turn_count = 0
             self.current_topic = None
-            return f"Here's how you did:\n\n{mastery['feedback']}\n\n**Summary:** {mastery['student_summary']}\n\nThis topic needs a bit more practice. When you start a new session, we'll revisit {self.current_topic} to build on what you've learned today."
-        
+            acknowledgment = self.get_acknowledgment("assessment_to_rapport")
+            return f"{acknowledgment}\n\nHere's how you did:\n\n{mastery['feedback']}\n\n**Summary:** {mastery['student_summary']}\n\nThis topic needs a bit more practice. When you start a new session, we'll revisit {completed_topic} to build on what you've learned today."
+
     def run_llm_judge(self, student_response):
         chunks = retrieve_chunks(self.current_topic)
         context = "\n\n".join(chunks[:3])
