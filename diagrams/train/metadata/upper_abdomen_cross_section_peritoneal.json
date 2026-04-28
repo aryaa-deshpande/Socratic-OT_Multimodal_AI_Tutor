@@ -1,0 +1,7 @@
+{
+  "filename": "upper_abdomen_cross_section_peritoneal.png",
+  "primary_structure": "upper abdominal cross section with peritoneal lining",
+  "body_region": "abdomen",
+  "visible_labels": ["peritoneum", "retroperitoneal space", "aorta", "inferior vena cava", "pancreas", "kidney", "Mattox manoeuvre plane"],
+  "textbook_chapter": "Abdomen - Digestive system"
+}

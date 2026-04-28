@@ -1,0 +1,7 @@
+{
+  "filename": "supramesocolic_organs_anterior.jpg",
+  "primary_structure": "supramesocolic organs",
+  "body_region": "abdomen",
+  "visible_labels": ["liver", "stomach", "spleen", "transverse mesocolon", "pancreas", "duodenum"],
+  "textbook_chapter": "Abdomen - Digestive system"
+}

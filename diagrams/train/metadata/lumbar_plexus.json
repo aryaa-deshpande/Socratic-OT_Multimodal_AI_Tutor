@@ -1,0 +1,7 @@
+{
+  "filename": "lumbar_plexus.png",
+  "primary_structure": "lumbar plexus",
+  "body_region": "abdomen",
+  "visible_labels": ["L1", "L2", "L3", "L4", "femoral nerve", "obturator nerve", "lateral cutaneous nerve of thigh", "iliohypogastric nerve", "ilioinguinal nerve", "genitofemoral nerve"],
+  "textbook_chapter": "Abdomen - Nervous system"
+}

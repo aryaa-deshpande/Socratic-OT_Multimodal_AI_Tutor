@@ -1,0 +1,7 @@
+{
+  "filename": "superior_thoracic_aperture.jpg",
+  "primary_structure": "superior thoracic aperture",
+  "body_region": "thorax",
+  "visible_labels": ["first rib", "clavicle", "manubrium", "subclavian artery", "subclavian vein", "brachial plexus", "scalene muscles"],
+  "textbook_chapter": "Thorax - Skeletal system"
+}

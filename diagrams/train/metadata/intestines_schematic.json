@@ -1,0 +1,7 @@
+{
+  "filename": "intestines_schematic.jpg",
+  "primary_structure": "intestines",
+  "body_region": "abdomen",
+  "visible_labels": ["duodenum", "jejunum", "ileum", "cecum", "ascending colon", "transverse colon", "descending colon", "sigmoid colon", "rectum"],
+  "textbook_chapter": "Abdomen - Digestive system"
+}

@@ -1,0 +1,7 @@
+{
+  "filename": "stomach_parts.png",
+  "primary_structure": "stomach",
+  "body_region": "abdomen",
+  "visible_labels": ["cardia", "fundus", "body", "antrum", "pylorus", "greater curvature", "lesser curvature", "pyloric sphincter"],
+  "textbook_chapter": "Abdomen - Digestive system"
+}

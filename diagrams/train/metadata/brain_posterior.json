@@ -1,0 +1,7 @@
+{
+  "filename": "brain_posterior.jpg",
+  "primary_structure": "brain",
+  "body_region": "head",
+  "visible_labels": ["cerebellum", "occipital lobe", "brainstem", "medulla oblongata", "pons", "cerebral hemispheres"],
+  "textbook_chapter": "Head - Nervous system"
+}
