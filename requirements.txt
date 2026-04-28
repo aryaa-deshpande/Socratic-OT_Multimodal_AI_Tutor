@@ -12,3 +12,4 @@ python-dotenv
 langchain-groq
 langchain-community
 langchain-openai
+torchvision
