@@ -19,7 +19,7 @@ class ManagerAgent:
         self.current_topic = None
         self.hidden_answer = None
         self.session_history = []
-        self.assessment_started = False
+        self.assessment_attempt = 0
         init_db()
         self.weak_spots = load_weak_spots(student_id)
     
@@ -43,7 +43,9 @@ class ManagerAgent:
             self.phase = "tutoring"
             self.current_topic = message
             self.turn_count = 0
-            return self.handle_tutoring(message)
+            acknowledgment = self.get_acknowledgment(message)
+            first_hint = self.handle_tutoring(message)
+            return f"{acknowledgment}\n\n{first_hint}"
         
         weak_spot_context = ""
         if self.weak_spots:
@@ -102,11 +104,10 @@ class ManagerAgent:
         return hint
         
     def handle_assessment(self, message):
-        
-        if not self.assessment_started:
-            self.assessment_started = True
+    
+        if self.assessment_attempt == 0:
+            self.assessment_attempt = 1
             
-            # get relevant chunks for context
             chunks = retrieve_chunks(self.current_topic)
             context = "\n\n".join(chunks[:3])
             
@@ -139,7 +140,29 @@ class ManagerAgent:
                 print(f"handle_assessment scenario error: {e}")
                 return f"Now that you have a better understanding of {self.current_topic}, how would you apply this in a clinical setting? Describe a patient scenario and walk me through your reasoning."
         
-        else:
+        elif self.assessment_attempt == 1:
+            self.assessment_attempt = 2
+            mastery = self.run_llm_judge(message)
+            
+            if mastery["score"] == "weak":
+                return f"Not quite, {mastery['feedback']}\n\nGive it another try! What would you expect to see clinically?"
+            
+            else:
+                save_mastery(
+                    student_id=self.student_id,
+                    topic=self.current_topic,
+                    score=mastery["score"],
+                    tutor_note=mastery["tutor_note"],
+                    student_summary=mastery["student_summary"]
+                )
+                self.phase = "rapport"
+                self.assessment_attempt = 0
+                self.hidden_answer = None
+                self.turn_count = 0
+                self.current_topic = None
+                return f"Here's how you did:\n\n{mastery['feedback']}\n\n**Summary:** {mastery['student_summary']}\n\nFeel free to ask me about another topic whenever you're ready!"
+        
+        elif self.assessment_attempt == 2:
             mastery = self.run_llm_judge(message)
             save_mastery(
                 student_id=self.student_id,
@@ -148,14 +171,12 @@ class ManagerAgent:
                 tutor_note=mastery["tutor_note"],
                 student_summary=mastery["student_summary"]
             )
-            
             self.phase = "rapport"
-            self.assessment_started = False
+            self.assessment_attempt = 0
             self.hidden_answer = None
             self.turn_count = 0
             self.current_topic = None
-            
-            return f"Here's how you did:\n\n{mastery['feedback']}\n\n**Summary:** {mastery['student_summary']}\n\nFeel free to ask me about another topic whenever you're ready!"
+            return f"Here's how you did:\n\n{mastery['feedback']}\n\n**Summary:** {mastery['student_summary']}\n\nThis topic needs a bit more practice. When you start a new session, we'll revisit {self.current_topic} to build on what you've learned today."
         
     def run_llm_judge(self, student_response):
         chunks = retrieve_chunks(self.current_topic)
@@ -192,3 +213,20 @@ class ManagerAgent:
                 "student_summary": "Good effort on that topic. Keep practicing!",
                 "feedback": "I wasn't able to fully evaluate your response this time. Let's keep going and come back to this topic."
             }
+        
+    def get_acknowledgment(self, message):
+        prompt = f"""You are a friendly anatomy tutor. The student just asked: "{message}"
+        
+    Write ONE very short sentence (max 10 words) acknowledging their question warmly before you start tutoring.
+    Examples: "Great question!", "Ooh, good one!", "Love that you're asking about this!"
+    Do not answer the question. Just acknowledge it."""
+
+        try:
+            result = groq_client.chat.completions.create(
+                model="llama-3.1-8b-instant",
+                messages=[{"role": "user", "content": prompt}]
+            )
+            return result.choices[0].message.content.strip()
+        except Exception as e:
+            print(f"get_acknowledgment error: {e}")
+            return "Great question! Let's explore this together."
