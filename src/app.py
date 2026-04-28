@@ -1,9 +1,11 @@
 import streamlit as st
 import sys
 import os
+import tempfile
 
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 from manager import ManagerAgent
+from vlm import handle_diagram_upload
 
 st.set_page_config(
     page_title="Socratic-OT Tutor",
@@ -74,18 +76,54 @@ if st.session_state.student_id is None:
 # initialize agent and messages
 if "agent" not in st.session_state:
     st.session_state.agent = ManagerAgent(st.session_state.student_id)
-
 if "messages" not in st.session_state:
     st.session_state.messages = []
+if "processed_image" not in st.session_state:
+    st.session_state.processed_image = None
 
 # render chat history
 for msg in st.session_state.messages:
     if msg["role"] == "user":
-        st.markdown(f'<div class="user-msg"><span>{msg["content"]}</span></div>', unsafe_allow_html=True)
+        if msg.get("is_image"):
+            st.markdown(f'<div class="user-msg"><span>📎 Uploaded a diagram</span></div>', unsafe_allow_html=True)
+            st.image(msg["image_data"], width=300)
+        else:
+            st.markdown(f'<div class="user-msg"><span>{msg["content"]}</span></div>', unsafe_allow_html=True)
     else:
         st.markdown(f'<div class="bot-msg"><div class="bot-avatar">🧬</div><span>{msg["content"]}</span></div>', unsafe_allow_html=True)
 
-# input
+# image upload
+uploaded_image = st.file_uploader(
+    "Upload a diagram",
+    type=["jpg", "jpeg", "png"],
+    label_visibility="collapsed",
+    key="image_uploader"
+)
+
+# handle image upload immediately when a new image is uploaded
+if uploaded_image is not None and uploaded_image.name != st.session_state.processed_image:
+    st.session_state.processed_image = uploaded_image.name
+    image_bytes = uploaded_image.read()
+    
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
+        tmp.write(image_bytes)
+        tmp_path = tmp.name
+    
+    st.session_state.messages.append({
+        "role": "user",
+        "content": "Uploaded a diagram",
+        "is_image": True,
+        "image_data": image_bytes
+    })
+    
+    with st.spinner("Analyzing diagram..."):
+        response, _ = handle_diagram_upload(tmp_path)
+    
+    os.remove(tmp_path)
+    st.session_state.messages.append({"role": "assistant", "content": response})
+    st.rerun()
+
+# text input
 if user_input := st.chat_input("Ask an anatomy question..."):
     st.session_state.messages.append({"role": "user", "content": user_input})
     with st.spinner("Thinking..."):
