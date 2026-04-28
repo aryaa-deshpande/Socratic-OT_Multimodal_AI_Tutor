@@ -100,7 +100,6 @@ uploaded_image = st.file_uploader(
     key="image_uploader"
 )
 
-# handle image upload immediately when a new image is uploaded
 if uploaded_image is not None and uploaded_image.name != st.session_state.processed_image:
     st.session_state.processed_image = uploaded_image.name
     image_bytes = uploaded_image.read()
@@ -117,9 +116,16 @@ if uploaded_image is not None and uploaded_image.name != st.session_state.proces
     })
     
     with st.spinner("Analyzing diagram..."):
-        response, _ = handle_diagram_upload(tmp_path)
+        response, image_description, hidden_structure = handle_diagram_upload(tmp_path)
     
     os.remove(tmp_path)
+    
+    # wire into manager agent tutoring phase
+    st.session_state.agent.phase = "tutoring"
+    st.session_state.agent.current_topic = hidden_structure
+    st.session_state.agent.hidden_answer = hidden_structure
+    st.session_state.agent.turn_count = 1
+    
     st.session_state.messages.append({"role": "assistant", "content": response})
     st.rerun()
 

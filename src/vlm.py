@@ -38,19 +38,28 @@ def generate_socratic_question(image_description):
 Here is what the diagram shows:
 {image_description}
 
-Generate ONE Socratic question that guides the student toward identifying the primary structure or understanding its function without naming it directly.
+Do two things:
+1. Identify the PRIMARY anatomical structure shown — this is your hidden answer
+2. Generate ONE Socratic question that guides the student toward identifying it without naming it
 
-Return only the question itself. No numbering, no preamble, no explanation. Just the question."""
+Return as JSON with two keys:
+- hidden_structure: the primary structure name (keep it short, 1-4 words)
+- question: the Socratic question only, no preamble
+
+Return only valid JSON, no extra text."""
 
     try:
         response = groq_client.chat.completions.create(
             model="llama-3.1-8b-instant",
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            response_format={"type": "json_object"}
         )
-        return response.choices[0].message.content.strip()
+        import json
+        result = json.loads(response.choices[0].message.content)
+        return result["question"], result["hidden_structure"]
     except Exception as e:
         print(f"generate_socratic_question error: {e}")
-        return "What structure do you think is shown in this diagram, and what is its function in the body?"
+        return "What structure do you think is shown in this diagram, and what is its function in the body?", "unknown structure"
 
 def handle_diagram_upload(image_path):
     print("Analyzing image with Gemma...")
@@ -58,12 +67,12 @@ def handle_diagram_upload(image_path):
     print(f"Gemma description: {image_description}")
     
     print("Generating Socratic question with Groq...")
-    question = generate_socratic_question(image_description)
+    question, hidden_structure = generate_socratic_question(image_description)
     
-    return question, image_description
+    return question, image_description, hidden_structure
 
 if __name__ == "__main__":
-    test_image = "diagrams/train/cranio_cervical_junction_ligaments.jpg"
+    test_image = "diagrams/train/lumbar_plexus.png"
     if os.path.exists(test_image):
         question, description = handle_diagram_upload(test_image)
         print("\nSocratic question for student:")
