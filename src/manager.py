@@ -155,13 +155,7 @@ class ManagerAgent:
             self.turn_count = 0
             self.current_topic = None
             
-            return f"""Here's how you did:
-
-    {mastery['feedback']}
-
-    **Summary:** {mastery['student_summary']}
-
-    Feel free to ask me about another topic whenever you're ready!"""
+            return f"Here's how you did:\n\n{mastery['feedback']}\n\n**Summary:** {mastery['student_summary']}\n\nFeel free to ask me about another topic whenever you're ready!"
         
     def run_llm_judge(self, student_response):
         chunks = retrieve_chunks(self.current_topic)
