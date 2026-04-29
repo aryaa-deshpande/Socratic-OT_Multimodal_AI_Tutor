@@ -50,28 +50,16 @@ def student_is_close(student_response, hidden_answer):
 Hidden answer: {hidden_answer}
 Student's response: {student_response}
 
-You are looking for THREE things — but be reasonable, not too strict:
-1. Does the student show they know WHAT the structure/system is — even if they use informal language?
-2. Does the student show they know its FUNCTION or role — even roughly?
-3. Is there at least ONE specific detail that shows genuine understanding — not just a guess?
+You are looking for THREE things:
+1. Does the student show they know WHAT the structure/system/process is?
+2. Does the student show they know its FUNCTION, role, or how it works?
+3. Is there at least ONE specific anatomical or physiological detail that shows genuine understanding beyond everyday language?
 
 Important guidance:
-- Informal language is fine — "part of the nervous system" counts as identifying it
-- Uncertain tone like "I think" or "maybe" is fine — judge the content not the confidence  
-- The student does NOT need to use exact medical terminology
-- But pure everyday language with no anatomical connection at all is NOT enough
-- Ask yourself: "Would a real tutor say this student clearly gets it?" If yes, answer YES
-
-Examples of NO:
-- "I think it has something to do with stress" — no anatomical connection, too vague
-- "maybe something in the brain?" — no specific detail at all
-- "fight or flight means your heart beats faster and you get adrenaline" — everyday language only, no nervous system connection
-- "I don't know" — obviously no
-
-Examples of YES:
-- "it's the part of the nervous system that prepares you for fight or flight by speeding up heart rate" — informal but has anatomical connection and specific detail
-- "I think it controls stress responses, increases heart rate and dilates pupils?" — uncertain tone but three specific details
-- "maybe the sympathetic division that activates during danger and redirects blood to muscles?" — close enough
+- Informal language is fine — judge content not vocabulary
+- Uncertain tone like "I think" or "maybe" is fine
+- Pure everyday language describing only the observable effect with no anatomical detail is NOT enough
+- The student must demonstrate understanding of the concept itself, not just its visible result
 
 Reply with only YES or NO."""
 
