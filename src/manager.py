@@ -42,7 +42,7 @@ class ManagerAgent:
     def handle_rapport(self, message):
         if self.is_content_question(message):
             self.phase = "tutoring"
-            self.current_topic = message
+            self.current_topic = message.strip().strip('"').strip("'")
             self.turn_count = 0
             acknowledgment = self.get_acknowledgment('rapport_to_tutoring')
             first_hint = self.handle_tutoring(message)
