@@ -167,8 +167,8 @@ Respond in 1-2 sentences maximum. Be warm and brief. Do not invent any scheduled
             mastery = self.run_llm_judge(message)
             
             if mastery["score"] == "weak":
-                return f"Not quite, {mastery['feedback']}\n\nGive it another try! What would you expect to see clinically?"
-            
+                retry_prompt = "Give it another try! What would you expect to see clinically?" if self.subject == "anatomy" else "Give it another try! How would you apply this concept in a real scenario?"
+                return f"Not quite — {mastery['feedback']}\n\n{retry_prompt}"
             else:
                 save_mastery(
                     student_id=self.student_id,
