@@ -12,8 +12,9 @@ load_dotenv()
 groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 class ManagerAgent:
-    def __init__(self, student_id):
+    def __init__(self, student_id, subject="anatomy"):
         self.student_id = student_id
+        self.subject = subject
         self.phase = "rapport"
         self.turn_count = 0
         self.current_topic = None
@@ -101,7 +102,8 @@ class ManagerAgent:
             self.current_topic,
             self.turn_count,
             self.session_history,
-            self.hidden_answer
+            self.hidden_answer,
+            subject=self.subject
         )
         
         return hint
