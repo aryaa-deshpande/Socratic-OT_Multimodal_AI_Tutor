@@ -172,7 +172,7 @@ def render_text_chat_page():
     with col2:
         st.markdown(f"""
         <div style='padding: 0.5rem 0;'>
-            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>🧬 Socratic-OT — {subject_label} Chat</h1>
+            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>🧬 Socratic-OT : {subject_label} Chat</h1>
         </div>
         """, unsafe_allow_html=True)
     
@@ -194,7 +194,7 @@ def render_diagram_chat_page():
     with col2:
         st.markdown("""
         <div style='padding: 0.5rem 0;'>
-            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>🧬 Socratic-OT — Diagram Chat</h1>
+            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>🧬 Socratic-OT : Diagram Chat</h1>
         </div>
         """, unsafe_allow_html=True)
     
@@ -250,7 +250,7 @@ def render_dashboard_page():
     with col2:
         st.markdown(f"""
         <div style='padding: 0.5rem 0;'>
-            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>📊 My Progress — {st.session_state.student_id}</h1>
+            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>📊 My Progress : {st.session_state.student_id}</h1>
         </div>
         """, unsafe_allow_html=True)
     
