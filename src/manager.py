@@ -215,7 +215,15 @@ Respond in 1-2 sentences maximum. Be warm and brief. Do not invent any scheduled
                 response_format={"type": "json_object"}
             )
             import json
-            return json.loads(response.choices[0].message.content)
+            result = json.loads(response.choices[0].message.content)
+
+            # handle feedback being a list or a string
+            feedback = result.get("feedback", "")
+            if isinstance(feedback, list):
+                feedback = " ".join(feedback)
+            result["feedback"] = feedback
+
+            return result
         except Exception as e:
             print(f"run_llm_judge error: {e}")
             return {
