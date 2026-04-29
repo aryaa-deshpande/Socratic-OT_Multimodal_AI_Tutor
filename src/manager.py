@@ -117,24 +117,36 @@ Respond in 1-2 sentences maximum. Be warm and brief. Do not invent any scheduled
             chunks = retrieve_chunks(self.current_topic)
             context = "\n\n".join(chunks[:3])
             
+            if self.subject == "anatomy":
+                scenario_instruction = f"""Generate ONE clinical scenario question for an OT student at an introductory level.
+            The scenario should:
+            - Describe a real patient situation an OT might encounter
+            - Ask the student to apply their understanding of {self.current_topic} to explain what is happening or what they would expect
+            - Be specific enough that there is a clear correct answer grounded in the textbook content
+            - NOT restate or hint at the answer
+
+            Example format: "A patient presents with X. Based on what you know, what would you expect and why?" """
+                
+            else:
+                scenario_instruction = f"""Generate ONE real-world physics application question at an introductory level.
+            The question should:
+            - Describe a practical everyday scenario where {self.current_topic} applies
+            - Ask the student to apply the physics concept to explain or calculate something
+            - Be specific enough that there is a clear correct answer grounded in the textbook content
+            - NOT restate or hint at the answer
+
+            Example format: "A ball is dropped from X height. Using what you know, what would you expect and why?" """
+
             prompt = f"""You are a {'clinical Occupational Therapy anatomy' if self.subject == 'anatomy' else 'physics'} tutor.
 
-    The student has just correctly identified the following concept:
-    Topic: {self.current_topic}
-    Answer: {self.hidden_answer}
+            The student has just correctly identified the following concept:
+            Topic: {self.current_topic}
+            Answer: {self.hidden_answer}
 
-    Textbook context:
-    {context}
+            Textbook context:
+            {context}
 
-    Generate ONE clinical scenario question for an OT student at an introductory level.
-    The scenario should:
-    - {'Describe a real patient situation an OT might encounter' if self.subject == 'anatomy' else 'Describe a real-world scenario where this physics concept applies'}
-    - Ask the student to apply their understanding of {self.current_topic} to explain what is happening or what they would expect
-    - Be specific enough that there is a clear correct answer grounded in the textbook content
-    - NOT restate or hint at the answer
-
-    Example format: "A patient presents with X. Based on what you know, what would you expect and why?"
-    """
+            {scenario_instruction}"""
 
             try:
                 response = groq_client.chat.completions.create(
