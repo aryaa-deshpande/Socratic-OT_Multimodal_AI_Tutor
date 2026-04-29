@@ -248,13 +248,15 @@ Respond in 1-2 sentences maximum. Be warm and brief. Do not invent any scheduled
             }
         
     def get_acknowledgment(self, transition_type):
+        subject_label = "anatomy" if self.subject == "anatomy" else "physics"
+        
         messages = {
-            "rapport_to_tutoring": "Generate ONE short warm sentence (max 10 words) acknowledging that the student asked a good question. Don't answer it.",
-            "tutoring_to_assessment": "Generate ONE short encouraging sentence (max 10 words) congratulating the student for figuring out the answer. Keep it natural.",
-            "assessment_to_rapport": "Generate ONE short warm closing sentence (max 10 words) wrapping up the topic and encouraging the student to keep going."
+            "rapport_to_tutoring": f"Generate ONE short warm sentence (max 10 words) acknowledging that the student asked a good {subject_label} question. Don't answer it.",
+            "tutoring_to_assessment": f"Generate ONE short encouraging sentence (max 10 words) congratulating the student for figuring out the {subject_label} answer. Keep it natural.",
+            "assessment_to_rapport": f"Generate ONE short warm closing sentence (max 10 words) wrapping up the {subject_label} topic and encouraging the student to keep going."
         }
         
-        prompt = f"""You are a friendly anatomy tutor. {messages[transition_type]}
+        prompt = f"""You are a friendly {subject_label} tutor. {messages[transition_type]}
     Examples of good responses: "Great question!", "Nice work getting there!", "Good session today!"
     Return only the sentence, nothing else."""
 
@@ -267,8 +269,8 @@ Respond in 1-2 sentences maximum. Be warm and brief. Do not invent any scheduled
         except Exception as e:
             print(f"get_acknowledgment error: {e}")
             fallbacks = {
-                "rapport_to_tutoring": "Great question! Let's explore this together.",
-                "tutoring_to_assessment": "Nice work! Now let's apply what you've learned.",
+                "rapport_to_tutoring": f"Great {subject_label} question! Let's explore this together.",
+                "tutoring_to_assessment": f"Nice work! Now let's apply what you've learned.",
                 "assessment_to_rapport": "Good effort today! Keep it up."
             }
             return fallbacks[transition_type]
