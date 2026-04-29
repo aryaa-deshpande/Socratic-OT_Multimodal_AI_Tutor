@@ -69,7 +69,16 @@ def handle_diagram_upload(image_path):
     print("Generating Socratic question with Groq...")
     question, hidden_structure = generate_socratic_question(image_description)
     
-    return question, image_description, hidden_structure
+    fillers = [
+        "Interesting diagram! Let me ask you something about it.",
+        "Nice image! Here's a question to get you thinking.",
+        "Great diagram to work with! Let's explore this together.",
+        "Ooh good one! Here's something to consider."
+    ]
+    import random
+    filler = random.choice(fillers)
+    
+    return f"{filler}\n\n{question}", image_description, hidden_structure
 
 if __name__ == "__main__":
     test_image = "diagrams/train/lumbar_plexus.png"
