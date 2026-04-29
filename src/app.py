@@ -116,7 +116,7 @@ def render_home_page():
     st.markdown("<div style='max-width: 500px; margin: 0 auto;'>", unsafe_allow_html=True)
     st.markdown("<p style='color: #8888aa; text-align: center; margin-bottom: 1.5rem;'>How would you like to study today?</p>", unsafe_allow_html=True)
     
-    col1, col2 = st.columns(2)
+    col1, col2, col3 = st.columns(3)
     with col1:
         if st.button("💬 Text Chat", use_container_width=True, help="Ask anatomy questions and get Socratic hints"):
             st.session_state.agent = ManagerAgent(st.session_state.student_id)
@@ -129,6 +129,10 @@ def render_home_page():
             st.session_state.messages = []
             st.session_state.processed_image = None
             st.session_state.page = "diagram_chat"
+            st.rerun()
+    with col3:
+        if st.button("📊 My Progress", use_container_width=True):
+            st.session_state.page = "dashboard"
             st.rerun()
     
     st.markdown("</div>", unsafe_allow_html=True)
@@ -221,6 +225,90 @@ def render_diagram_chat_page():
         st.session_state.messages.append({"role": "assistant", "content": response})
         st.rerun()
 
+def render_dashboard_page():
+    col1, col2 = st.columns([1, 6])
+    with col1:
+        if st.button("🏠", help="Go home"):
+            go_home()
+    with col2:
+        st.markdown(f"""
+        <div style='padding: 0.5rem 0;'>
+            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>📊 My Progress</h1>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    from memory import get_student_summary
+    records = get_student_summary(st.session_state.student_id)
+    
+    if not records:
+        st.markdown("""
+        <div style='text-align: center; padding: 3rem; color: #8888aa;'>
+            <p style='font-size: 1.2rem;'>No sessions yet!</p>
+            <p style='font-size: 0.9rem;'>Complete a tutoring session to see your progress here.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        return
+    
+    # summary stats
+    total = len(records)
+    strong = sum(1 for r in records if r[1] == "strong")
+    partial = sum(1 for r in records if r[1] == "partial")
+    weak = sum(1 for r in records if r[1] == "weak" or r[1] == "incomplete")
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.metric("Total Topics", total)
+    with col2:
+        st.metric("Strong", strong)
+    with col3:
+        st.metric("Needs Work", partial + weak)
+    
+    st.markdown("<hr style='border-color: #2d2d4e; margin: 1rem 0;'>", unsafe_allow_html=True)
+    
+    # bar chart
+    import pandas as pd
+    df = pd.DataFrame(records, columns=["topic", "score", "summary", "date"])
+    
+    score_order = {"strong": 3, "partial": 2, "weak": 1, "incomplete": 0}
+    score_color = {"strong": "#22c55e", "partial": "#f59e0b", "weak": "#ef4444", "incomplete": "#6b7280"}
+    
+    st.markdown("<p style='color: #e0e0ff; font-weight: 600; margin-bottom: 0.5rem;'>Topic Scores</p>", unsafe_allow_html=True)
+    
+    for _, row in df.iterrows():
+        color = score_color.get(row["score"], "#6b7280")
+        st.markdown(f"""
+        <div style='display: flex; align-items: center; gap: 1rem; margin: 0.4rem 0;'>
+            <div style='flex: 1; color: #e0e0ff; font-size: 0.9rem;'>{row['topic']}</div>
+            <div style='background: {color}; color: white; padding: 2px 12px; border-radius: 12px; font-size: 0.8rem; font-weight: 500;'>{row['score']}</div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    st.markdown("<hr style='border-color: #2d2d4e; margin: 1rem 0;'>", unsafe_allow_html=True)
+    
+    # weak spots
+    weak_records = [r for r in records if r[1] in ["partial", "weak", "incomplete"]]
+    if weak_records:
+        st.markdown("<p style='color: #e0e0ff; font-weight: 600; margin-bottom: 0.5rem;'>Topics to Revisit</p>", unsafe_allow_html=True)
+        for r in weak_records:
+            st.markdown(f"""
+            <div style='background: #2d2d4e; border-left: 3px solid #f59e0b; padding: 0.6rem 1rem; border-radius: 0 8px 8px 0; margin: 0.4rem 0;'>
+                <p style='color: #e0e0ff; margin: 0; font-size: 0.9rem; font-weight: 500;'>{r[0]}</p>
+                <p style='color: #8888aa; margin: 0; font-size: 0.8rem;'>{r[2]}</p>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    # session history
+    st.markdown("<hr style='border-color: #2d2d4e; margin: 1rem 0;'>", unsafe_allow_html=True)
+    st.markdown("<p style='color: #e0e0ff; font-weight: 600; margin-bottom: 0.5rem;'>Session History</p>", unsafe_allow_html=True)
+    for r in records:
+        date = r[3][:10] if r[3] else "unknown"
+        st.markdown(f"""
+        <div style='display: flex; justify-content: space-between; padding: 0.4rem 0; border-bottom: 1px solid #2d2d4e;'>
+            <span style='color: #e0e0ff; font-size: 0.85rem;'>{r[0]}</span>
+            <span style='color: #8888aa; font-size: 0.8rem;'>{date}</span>
+        </div>
+        """, unsafe_allow_html=True)
+
 # page router
 if st.session_state.page == "name":
     render_name_page()
@@ -230,3 +318,5 @@ elif st.session_state.page == "text_chat":
     render_text_chat_page()
 elif st.session_state.page == "diagram_chat":
     render_diagram_chat_page()
+elif st.session_state.page == "dashboard":
+    render_dashboard_page()
