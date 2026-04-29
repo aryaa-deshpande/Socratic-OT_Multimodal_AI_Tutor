@@ -53,8 +53,11 @@ class ManagerAgent:
             weak_spot_context = f"This student previously struggled with: {', '.join(self.weak_spots)}. Reference this naturally if relevant."
         
         subject_label = "anatomy" if self.subject == "anatomy" else "physics"
-        prompt = f"""You are a friendly {subject_label} tutor starting a session with a student."""
-
+        prompt = f"""You are a friendly {subject_label} tutor starting a session with a student.
+{weak_spot_context}
+The student said: "{message}"
+Respond in 1-2 sentences maximum. Be warm and brief. Do not invent any scheduled topics. If the student has weak spots reference them in one short sentence. End with a simple question asking what they want to work on."""
+        
         try:
             response = groq_client.chat.completions.create(
                 model="llama-3.1-8b-instant",
