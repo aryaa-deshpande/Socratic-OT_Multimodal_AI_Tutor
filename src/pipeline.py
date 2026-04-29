@@ -87,7 +87,7 @@ Reply with only YES or NO."""
         print(f"student_is_close error: {e}")
         return False
     
-def generate_hint(question, chunks, hidden_answer, turn_number, history=None):
+def generate_hint(question, chunks, hidden_answer, turn_number, history=None, attempt=0, subject="anatomy"):
     if history is None:
         history = []
     context = "\n\n".join(chunks)
@@ -106,7 +106,9 @@ def generate_hint(question, chunks, hidden_answer, turn_number, history=None):
         for msg in student_messages:
             history_text += f"- {msg['content']}\n"
     
-    prompt = f"""You are a Socratic anatomy tutor.
+    tutor_type = "anatomy tutor for Occupational Therapy students" if subject == "anatomy" else "physics tutor"
+
+    prompt = f"""You are a Socratic {tutor_type}.
             You know the answer is: [{hidden_answer}] — do NOT reveal it.
             IMPORTANT: Only reference what is explicitly written in the conversation history below. Do NOT invent, assume, or reference any prior discussion that is not shown here.
 
