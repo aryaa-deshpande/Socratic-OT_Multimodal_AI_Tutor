@@ -52,10 +52,8 @@ class ManagerAgent:
         if self.weak_spots:
             weak_spot_context = f"This student previously struggled with: {', '.join(self.weak_spots)}. Reference this naturally if relevant."
         
-        prompt = f"""You are a friendly anatomy tutor starting a session with a student.
-    {weak_spot_context}
-    The student said: "{message}"
-    Respond warmly and briefly. If they seem ready to study, ask what they want to work on today."""
+        subject_label = "anatomy" if self.subject == "anatomy" else "physics"
+        prompt = f"""You are a friendly {subject_label} tutor starting a session with a student."""
 
         try:
             response = groq_client.chat.completions.create(
@@ -116,7 +114,7 @@ class ManagerAgent:
             chunks = retrieve_chunks(self.current_topic)
             context = "\n\n".join(chunks[:3])
             
-            prompt = f"""You are an Occupational Therapy anatomy tutor.
+            prompt = f"""You are a {'clinical Occupational Therapy anatomy' if self.subject == 'anatomy' else 'physics'} tutor.
 
     The student has just correctly identified the following concept:
     Topic: {self.current_topic}
@@ -127,7 +125,7 @@ class ManagerAgent:
 
     Generate ONE clinical scenario question for an OT student at an introductory level.
     The scenario should:
-    - Describe a real patient situation an OT might encounter
+    - {'Describe a real patient situation an OT might encounter' if self.subject == 'anatomy' else 'Describe a real-world scenario where this physics concept applies'}
     - Ask the student to apply their understanding of {self.current_topic} to explain what is happening or what they would expect
     - Be specific enough that there is a clear correct answer grounded in the textbook content
     - NOT restate or hint at the answer
@@ -192,7 +190,7 @@ class ManagerAgent:
         chunks = retrieve_chunks(self.current_topic)
         context = "\n\n".join(chunks[:3])
         
-        prompt = f"""You are evaluating an OT student's clinical reasoning.
+        prompt = f"""You are evaluating a {'OT' if self.subject == 'anatomy' else 'physics'} student's reasoning.
 
     Topic: {self.current_topic}
     Gold standard answer: {self.hidden_answer}
