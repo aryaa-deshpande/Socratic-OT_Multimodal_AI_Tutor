@@ -150,14 +150,14 @@ def guardrail_check(response_text, hidden_answer):
         print(f"guardrail_check error: {e}")
         return True
 
-def masking_pipeline(question, turn_number, history=None, stored_answer = None):
+def masking_pipeline(question, turn_number, history=None, stored_answer=None, subject="anatomy"):
     if history is None:
         history = []
-    chunks = retrieve_chunks(question)
+    chunks = retrieve_chunks(question, subject=subject)
     hidden_answer = stored_answer if stored_answer else extract_answer(question, chunks)
     
     for attempt in range(3):
-        hint = generate_hint(question, chunks, hidden_answer, turn_number, history)
+        hint = generate_hint(question, chunks, hidden_answer, turn_number, history, subject=subject)
         if guardrail_check(hint, hidden_answer):
             return hint, hidden_answer
     
