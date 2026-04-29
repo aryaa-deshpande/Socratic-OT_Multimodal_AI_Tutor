@@ -124,6 +124,7 @@ Respond in 1-2 sentences maximum. Be warm and brief. Do not invent any scheduled
             - Ask the student to apply their understanding of {self.current_topic} to explain what is happening or what they would expect
             - Be specific enough that there is a clear correct answer grounded in the textbook content
             - NOT restate or hint at the answer
+            - DO NOT include the answer or any explanations of what should happen in the scenario
 
             Example format: "A patient presents with X. Based on what you know, what would you expect and why?" """
                 
@@ -134,6 +135,7 @@ Respond in 1-2 sentences maximum. Be warm and brief. Do not invent any scheduled
             - Ask the student to apply the physics concept to explain or calculate something
             - Be specific enough that there is a clear correct answer grounded in the textbook content
             - NOT restate or hint at the answer
+            - DO NOT include the answer, any calculations, or worked solutions in the question
 
             Example format: "A ball is dropped from X height. Using what you know, what would you expect and why?" """
 
