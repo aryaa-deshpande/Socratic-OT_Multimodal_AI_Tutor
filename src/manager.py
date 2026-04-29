@@ -49,7 +49,7 @@ class ManagerAgent:
             return f"{acknowledgment}\n\n{first_hint}"
         
         weak_spot_context = ""
-        if self.weak_spots:
+        if self.weak_spots and self.subject == "anatomy":
             weak_spot_context = f"This student previously struggled with: {', '.join(self.weak_spots)}. Reference this naturally if relevant."
         
         subject_label = "anatomy" if self.subject == "anatomy" else "physics"
