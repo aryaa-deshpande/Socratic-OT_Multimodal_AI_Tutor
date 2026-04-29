@@ -14,9 +14,15 @@ embed_model = SentenceTransformer("all-MiniLM-L6-v2")
 client = chromadb.PersistentClient(path=os.path.join(BASE_DIR, "data/chromadb"))
 collection = client.get_or_create_collection("anatomy")
 
-def retrieve_chunks(query, n=5):
+def retrieve_chunks(query, n=5, subject="anatomy"):
     embedding = embed_model.encode(query).tolist()
-    results = collection.query(query_embeddings=[embedding], n_results=n)
+    
+    if subject == "physics":
+        col = client.get_or_create_collection("physics")
+    else:
+        col = collection  
+    
+    results = col.query(query_embeddings=[embedding], n_results=n)
     return results["documents"][0]
 
 
