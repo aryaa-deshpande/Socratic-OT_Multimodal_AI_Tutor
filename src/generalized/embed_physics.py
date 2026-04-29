@@ -35,7 +35,7 @@ def embed_physics():
     
     print("Done.")
     
-    # test retrieval
+
     query = "what is Newton's second law"
     embedding = model.encode(query).tolist()
     results = collection.query(query_embeddings=[embedding], n_results=3)
