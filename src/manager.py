@@ -44,20 +44,26 @@ class ManagerAgent:
             self.phase = "tutoring"
             self.current_topic = message.strip().strip('"').strip("'")
             self.turn_count = 0
-            acknowledgment = self.get_acknowledgment('rapport_to_tutoring')
+            acknowledgment = self.get_acknowledgment("rapport_to_tutoring")
             first_hint = self.handle_tutoring(message)
             return f"{acknowledgment}\n\n{first_hint}"
         
+        subject_label = "anatomy" if self.subject == "anatomy" else "physics"
+        
         weak_spot_context = ""
         if self.weak_spots and self.subject == "anatomy":
-            weak_spot_context = f"This student previously struggled with: {', '.join(self.weak_spots)}. Reference this naturally if relevant."
+            weak_spot_context = f"This student previously struggled with: {', '.join(self.weak_spots)}. Mention this naturally in one sentence."
         
-        subject_label = "anatomy" if self.subject == "anatomy" else "physics"
-        prompt = f"""You are a friendly {subject_label} tutor starting a session with a student.
-{weak_spot_context}
-The student said: "{message}"
-Respond in 1-2 sentences maximum. Be warm and brief. Do not invent any scheduled topics. If the student has weak spots reference them in one short sentence. End with a simple question asking what they want to work on."""
-        
+        if weak_spot_context:
+            prompt = f"""You are a friendly {subject_label} tutor.
+    {weak_spot_context}
+    The student said: "{message}"
+    Respond in 2 sentences maximum. Greet them warmly, mention their weak spot naturally, and ask what they want to work on today. Do not invent any prior sessions or topics."""
+        else:
+            prompt = f"""You are a friendly {subject_label} tutor.
+    The student said: "{message}"
+    Respond in 1 sentence. Just greet them warmly and ask what they want to work on today. Do not reference any prior sessions or topics."""
+
         try:
             response = groq_client.chat.completions.create(
                 model="llama-3.1-8b-instant",
