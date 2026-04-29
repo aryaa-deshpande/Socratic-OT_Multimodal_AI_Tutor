@@ -44,7 +44,6 @@ st.markdown("""
         border: 1px solid #444466 !important; border-radius: 12px !important;
     }
     .stChatInput button { background: #7c3aed !important; }
-    .home-btn { margin-bottom: 1rem; }
     #MainMenu, header, footer { visibility: hidden; }
 </style>
 """, unsafe_allow_html=True)
@@ -60,6 +59,8 @@ if "messages" not in st.session_state:
     st.session_state.messages = []
 if "processed_image" not in st.session_state:
     st.session_state.processed_image = None
+if "selected_subject" not in st.session_state:
+    st.session_state.selected_subject = "anatomy"
 
 def go_home():
     agent = st.session_state.agent
@@ -113,19 +114,35 @@ def render_home_page():
     </div>
     """, unsafe_allow_html=True)
     
-    st.markdown("<div style='max-width: 500px; margin: 0 auto;'>", unsafe_allow_html=True)
-    st.markdown("<p style='color: #8888aa; text-align: center; margin-bottom: 1.5rem;'>How would you like to study today?</p>", unsafe_allow_html=True)
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.markdown("<p style='color: #8888aa; text-align: center; margin-bottom: 0.5rem;'>Select a subject:</p>", unsafe_allow_html=True)
+        subject = st.radio(
+            "Subject",
+            ["🧬 Anatomy", "⚛️ Physics"],
+            horizontal=True,
+            label_visibility="collapsed"
+        )
+        st.session_state.selected_subject = "anatomy" if "Anatomy" in subject else "physics"
+        
+        st.markdown("<p style='color: #8888aa; text-align: center; margin: 1rem 0 0.5rem 0;'>How would you like to study today?</p>", unsafe_allow_html=True)
     
     col1, col2, col3 = st.columns(3)
     with col1:
-        if st.button("💬 Text Chat", use_container_width=True, help="Ask anatomy questions and get Socratic hints"):
-            st.session_state.agent = ManagerAgent(st.session_state.student_id)
+        if st.button("💬 Text Chat", use_container_width=True):
+            st.session_state.agent = ManagerAgent(
+                st.session_state.student_id,
+                subject=st.session_state.selected_subject
+            )
             st.session_state.messages = []
             st.session_state.page = "text_chat"
             st.rerun()
     with col2:
-        if st.button("🖼️ Diagram Chat", use_container_width=True, help="Upload an anatomical diagram and get guided"):
-            st.session_state.agent = ManagerAgent(st.session_state.student_id)
+        if st.button("🖼️ Diagram Chat", use_container_width=True):
+            st.session_state.agent = ManagerAgent(
+                st.session_state.student_id,
+                subject=st.session_state.selected_subject
+            )
             st.session_state.messages = []
             st.session_state.processed_image = None
             st.session_state.page = "diagram_chat"
@@ -134,8 +151,6 @@ def render_home_page():
         if st.button("📊 My Progress", use_container_width=True):
             st.session_state.page = "dashboard"
             st.rerun()
-    
-    st.markdown("</div>", unsafe_allow_html=True)
 
 def render_chat_history():
     for msg in st.session_state.messages:
@@ -149,20 +164,22 @@ def render_chat_history():
             st.markdown(f'<div class="bot-msg"><div class="bot-avatar">🧬</div><span>{msg["content"]}</span></div>', unsafe_allow_html=True)
 
 def render_text_chat_page():
+    subject_label = "Anatomy" if st.session_state.selected_subject == "anatomy" else "Physics"
     col1, col2 = st.columns([1, 6])
     with col1:
         if st.button("🏠", help="Go home"):
             go_home()
     with col2:
-        st.markdown("""
+        st.markdown(f"""
         <div style='padding: 0.5rem 0;'>
-            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>🧬 Socratic-OT — Text Chat</h1>
+            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>🧬 Socratic-OT — {subject_label} Chat</h1>
         </div>
         """, unsafe_allow_html=True)
     
     render_chat_history()
     
-    if user_input := st.chat_input("Ask an anatomy question..."):
+    placeholder = "Ask an anatomy question..." if st.session_state.selected_subject == "anatomy" else "Ask a physics question..."
+    if user_input := st.chat_input(placeholder):
         st.session_state.messages.append({"role": "user", "content": user_input})
         with st.spinner("Thinking..."):
             response = st.session_state.agent.respond(user_input)
@@ -233,7 +250,7 @@ def render_dashboard_page():
     with col2:
         st.markdown(f"""
         <div style='padding: 0.5rem 0;'>
-            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>📊 My Progress</h1>
+            <h1 style='color: #e0e0ff; font-size: 1.4rem; margin: 0;'>📊 My Progress — {st.session_state.student_id}</h1>
         </div>
         """, unsafe_allow_html=True)
     
@@ -249,11 +266,10 @@ def render_dashboard_page():
         """, unsafe_allow_html=True)
         return
     
-    # summary stats
     total = len(records)
     strong = sum(1 for r in records if r[1] == "strong")
     partial = sum(1 for r in records if r[1] == "partial")
-    weak = sum(1 for r in records if r[1] == "weak" or r[1] == "incomplete")
+    weak = sum(1 for r in records if r[1] in ["weak", "incomplete"])
     
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -265,15 +281,11 @@ def render_dashboard_page():
     
     st.markdown("<hr style='border-color: #2d2d4e; margin: 1rem 0;'>", unsafe_allow_html=True)
     
-    # bar chart
     import pandas as pd
     df = pd.DataFrame(records, columns=["topic", "score", "summary", "date"])
-    
-    score_order = {"strong": 3, "partial": 2, "weak": 1, "incomplete": 0}
     score_color = {"strong": "#22c55e", "partial": "#f59e0b", "weak": "#ef4444", "incomplete": "#6b7280"}
     
     st.markdown("<p style='color: #e0e0ff; font-weight: 600; margin-bottom: 0.5rem;'>Topic Scores</p>", unsafe_allow_html=True)
-    
     for _, row in df.iterrows():
         color = score_color.get(row["score"], "#6b7280")
         st.markdown(f"""
@@ -285,7 +297,6 @@ def render_dashboard_page():
     
     st.markdown("<hr style='border-color: #2d2d4e; margin: 1rem 0;'>", unsafe_allow_html=True)
     
-    # weak spots
     weak_records = [r for r in records if r[1] in ["partial", "weak", "incomplete"]]
     if weak_records:
         st.markdown("<p style='color: #e0e0ff; font-weight: 600; margin-bottom: 0.5rem;'>Topics to Revisit</p>", unsafe_allow_html=True)
@@ -297,7 +308,6 @@ def render_dashboard_page():
             </div>
             """, unsafe_allow_html=True)
     
-    # session history
     st.markdown("<hr style='border-color: #2d2d4e; margin: 1rem 0;'>", unsafe_allow_html=True)
     st.markdown("<p style='color: #e0e0ff; font-weight: 600; margin-bottom: 0.5rem;'>Session History</p>", unsafe_allow_html=True)
     for r in records:
