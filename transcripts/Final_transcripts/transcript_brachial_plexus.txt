@@ -1,0 +1,48 @@
+Transcript — Socratic-OT Anatomy Tutor
+Topic: Brachial Plexus
+Date: April 29, 2026
+========================================
+
+Student: heyy
+
+Tutor: "Hey back to you, how are you doing today and is there a specific area of anatomy you'd like to explore or review?"
+
+----------------------------------------
+
+Student: what is the brachial plexus?
+
+Tutor: You're really thinking about the musculoskeletal system, aren't you?
+When considering the brachial plexus, what comes to mind is its relation to the nervous system. Have you thought about what type of nerve it might be, or its function in terms of bodily movements?
+
+----------------------------------------
+
+Student: I think it's a network of nerves that comes from the cervical spine and controls the arm?
+
+Tutor: Well done on getting the hang of that challenging concept!
+You're very close! Can you now put it all together and tell me the full answer in your own words?
+
+----------------------------------------
+
+Student: The brachial plexus is a network of nerves formed by spinal nerves C4 through T1 that reorganize to supply the nerves of the arm, controlling both motor function and sensation in the upper limb.
+
+Tutor: You're really grasping the concept, that's awesome to see.
+Now let's see if you can apply what you've learned. Here's a clinical scenario:
+
+A pediatric patient, 8-year-old Emma, was in a severe motor vehicle accident and has been diagnosed with a brachial plexus injury. Emma's left arm feels weak and numb, and she has difficulty moving her shoulder. During physical therapy assessment, Emma's OT assistant notes that the radial nerve appears to be affected, as she is unable to extend her wrist and fingers properly. Based on Emma's symptoms and presentation, what do you think is happening with Emma's brachial plexus, and how do you expect Emma's nerves to be affected?
+
+----------------------------------------
+
+Student: Emma's brachial plexus injury is affecting the nerves that supply her left arm, specifically the radial nerve which originates from the posterior cord of the brachial plexus. The radial nerve controls wrist and finger extension, so damage to it explains why Emma can't extend her wrist and fingers. The weakness and numbness suggest the injury is disrupting both motor and sensory fibers from the C4-T1 spinal levels that form the brachial plexus.
+
+Tutor: Let's keep learning - anatomy is fascinating, keep it up!
+Here's how you did:
+
+Your description of the radial nerve's origin from the posterior cord of the brachial plexus was accurate and showed a good grasp of the nerve's anatomy. However, the student could benefit from more clearly linking the injury to the affected muscles and their functions, as you touched on with wrist and finger extension but didn't expand on it further. Additionally, you correctly identified the disruption of both motor and sensory fibers, which is essential for clinical reasoning. One minor point to consider is the range of spinal levels (C5-T1) instead of C4-T1 to ensure accuracy in your clinical description.
+
+Summary: You demonstrated a good understanding of the brachial plexus and its relationship to the arm's nerve supply.
+
+Feel free to ask me about another topic whenever you're ready!
+
+========================================
+End of transcript
+Socratic purity check: Answer was NOT revealed before turn 3. ✅
