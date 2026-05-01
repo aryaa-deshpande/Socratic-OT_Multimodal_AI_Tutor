@@ -95,16 +95,42 @@ class ManagerAgent:
         
     def handle_tutoring(self, message):
         self.turn_count += 1
-        print(f"DEBUG hidden_answer: {self.hidden_answer}")
-        print(f"DEBUG student message: {message}")
         
-        # check if student is close to the answer
         if self.turn_count > 1 and self.hidden_answer:
-            if student_is_close(message, self.hidden_answer):
+            score = student_is_close(message, self.hidden_answer)
+            
+            if score >= 7:
+                # student is close transition to assessment
                 self.phase = "assessment"
                 acknowledgment = self.get_acknowledgment("tutoring_to_assessment")
                 return f"{acknowledgment}\n\nYou're very close! Can you now put it all together and tell me the full answer in your own words?"
+            
+            elif score >= 5:
+                # student is on the right track encouraging nudge
+                subject_label = "anatomy" if self.subject == "anatomy" else "physics"
+                prompt = f"""You are a Socratic {subject_label} tutor. The student is on the right track but needs to be more specific.
+
+    Hidden answer (do NOT reveal): {self.hidden_answer}
+    Student's response: {message}
+
+    Generate ONE short encouraging response that:
+    - Acknowledges they are heading in the right direction
+    - Asks them to be more specific about one key aspect they are missing
+    - Does not reveal the answer or any synonym of it
+
+    Keep it to 2 sentences maximum."""
+
+                try:
+                    response = groq_client.chat.completions.create(
+                        model="llama-3.1-8b-instant",
+                        messages=[{"role": "user", "content": prompt}]
+                    )
+                    return response.choices[0].message.content.strip()
+                except Exception as e:
+                    print(f"handle_tutoring mid-range error: {e}")
+                    return "You're on the right track! Can you be more specific about the key components involved?"
         
+        # score 0-4 or turn 1 normal Socratic hint
         hint, self.hidden_answer = masking_pipeline(
             self.current_topic,
             self.turn_count,
