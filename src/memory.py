@@ -15,35 +15,37 @@ def init_db():
             score TEXT,
             tutor_note TEXT,
             student_summary TEXT,
-            session_date TEXT
+            session_date TEXT,
+            subject TEXT DEFAULT anatomy
         )
     """)
     conn.commit()
     conn.close()
     print("Database initialized")
 
-def save_mastery(student_id, topic, score, tutor_note, student_summary):
+def save_mastery(student_id, topic, score, tutor_note, student_summary, subject = "anatomy"):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""
-        INSERT INTO mastery VALUES (?, ?, ?, ?, ?, ?)
+        INSERT INTO mastery VALUES (?, ?, ?, ?, ?, ?, ?)
     """, (
         student_id,
         topic,
         score,
         tutor_note,
         student_summary,
-        datetime.now().isoformat()
+        datetime.now().isoformat(),
+        subject
     ))
     conn.commit()
     conn.close()
 
-def load_weak_spots(student_id):
+def load_weak_spots(student_id, subject = "anatomy"):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute("""
         SELECT topic, tutor_note FROM mastery
-        WHERE student_id = ? AND score != 'strong'
+        WHERE student_id = ? AND score != 'strong' AND subject = ?
         ORDER BY session_date DESC
         LIMIT 5
     """, (student_id,))
