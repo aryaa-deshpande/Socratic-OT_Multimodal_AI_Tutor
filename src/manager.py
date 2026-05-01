@@ -22,7 +22,7 @@ class ManagerAgent:
         self.session_history = []
         self.assessment_attempt = 0
         init_db()
-        self.weak_spots = load_weak_spots(student_id)
+        self.weak_spots = load_weak_spots(student_id, subject=subject)
     
     def respond(self, student_message):
         self.session_history.append({"role": "user", "content": student_message})
@@ -181,7 +181,8 @@ class ManagerAgent:
                     topic=self.current_topic,
                     score=mastery["score"],
                     tutor_note=mastery["tutor_note"],
-                    student_summary=mastery["student_summary"]
+                    student_summary=mastery["student_summary"],
+                    subject=self.subject
                 )
                 self.phase = "rapport"
                 self.assessment_attempt = 0
@@ -198,7 +199,8 @@ class ManagerAgent:
                 topic=self.current_topic,
                 score=mastery["score"],
                 tutor_note=mastery["tutor_note"],
-                student_summary=mastery["student_summary"]
+                student_summary=mastery["student_summary"],
+                subject=self.subject
             )
             completed_topic = self.current_topic
             self.phase = "rapport"

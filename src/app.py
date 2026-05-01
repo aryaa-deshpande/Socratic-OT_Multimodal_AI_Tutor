@@ -71,7 +71,8 @@ def go_home():
                 topic=agent.current_topic,
                 score="incomplete",
                 tutor_note="Student left session before completing topic",
-                student_summary="Session ended early on this topic"
+                student_summary="Session ended early on this topic",
+                subject=agent.subject
             )
         elif agent.phase == "assessment":
             save_mastery(
@@ -79,7 +80,8 @@ def go_home():
                 topic=agent.current_topic,
                 score="incomplete",
                 tutor_note="Student left during assessment",
-                student_summary="Session ended during clinical scenario"
+                student_summary="Session ended during clinical scenario",
+                subject=agent.subject
             )
     st.session_state.agent = None
     st.session_state.messages = []
