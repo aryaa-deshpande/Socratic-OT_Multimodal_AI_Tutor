@@ -45,35 +45,59 @@ def extract_answer(question, chunks):
     return response.choices[0].message.content.strip()
 
 def student_is_close(student_response, hidden_answer):
-    prompt = f"""You are a fair and experienced anatomy tutor evaluating whether a student understands a concept well enough to move forward.
+    prompt = f"""You are evaluating how close a student is to correctly answering a question.
 
 Hidden answer: {hidden_answer}
-Student's response: {student_response}
+Student response: {student_response}
 
-You are looking for THREE things:
-1. Does the student show they know WHAT the structure/system/process is?
-2. Does the student show they know its FUNCTION, role, or how it works?
-3. Is there at least ONE specific anatomical or physiological detail that shows genuine understanding beyond everyday language?
+Rate the student's response on a scale of 0 to 10 using this rubric:
 
-Important guidance:
-- Informal language is fine — judge content not vocabulary
-- Uncertain tone like "I think" or "maybe" is fine
-- Pure everyday language describing only the observable effect with no anatomical detail is NOT enough
-- The student must demonstrate understanding of the concept itself, not just its visible result
+0-3: No scientific understanding — uses only everyday language, describes observable effects without any mechanism, or makes a vague single-word guess
+4-6: Surface level understanding — identifies the general category correctly but missing specific components, correct direction but incomplete
+7-8: Solid understanding — correctly identifies what it is, describes its function with at least one specific detail, understands the mechanism not just the observable effect
+9-10: Complete understanding — all key components described, mechanism fully explained, specific enough that a tutor would say "yes exactly"
 
-Reply with only YES or NO."""
+Important:
+- Uncertain tone like "I think" or "maybe" is fine — judge content not confidence
+- Everyday language describing only observable effects scores 0-3 regardless of topic
+- A single vague word that appears in the hidden answer does NOT warrant a high score
 
+Reply with only a number between 0 and 10. Nothing else."""
 
     try:
         result = groq_client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[{"role": "user", "content": prompt}]
         )
-        answer = result.choices[0].message.content.strip().upper()
-        return "YES" in answer
+        raw = result.choices[0].message.content.strip().lower()
+        
+        # handle word numbers
+        word_to_num = {
+            "zero": 0, "one": 1, "two": 2, "three": 3, "four": 4,
+            "five": 5, "six": 6, "seven": 7, "eight": 8, "nine": 9, "ten": 10
+        }
+        
+        # try extracting a digit first
+        import re
+        numbers = re.findall(r'\b(\d+(?:\.\d+)?)\b', raw)
+        if numbers:
+            score = float(numbers[0])
+        else:
+            # try word numbers
+            for word, num in word_to_num.items():
+                if word in raw:
+                    score = float(num)
+                    break
+            else:
+                print(f"student_is_close could not parse score from: {raw}")
+                return 0
+        
+        score = min(max(score, 0), 10)  # clamp between 0 and 10
+        print(f"student_is_close score: {score}")
+        return score
     except Exception as e:
         print(f"student_is_close error: {e}")
-        return False
+        return 0
     
 def generate_hint(question, chunks, hidden_answer, turn_number, history=None, attempt=0, subject="anatomy"):
     if history is None:
