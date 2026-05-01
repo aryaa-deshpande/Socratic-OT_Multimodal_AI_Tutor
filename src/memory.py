@@ -48,7 +48,7 @@ def load_weak_spots(student_id, subject = "anatomy"):
         WHERE student_id = ? AND score != 'strong' AND subject = ?
         ORDER BY session_date DESC
         LIMIT 5
-    """, (student_id,))
+    """, (student_id,subject))
     rows = c.fetchall()
     conn.close()
     return [f"{row[0]}: {row[1]}" for row in rows]
